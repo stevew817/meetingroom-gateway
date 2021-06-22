@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+  otbr-mqtt:
+    build: otbr-mqtt-sn/
+    image: otbr-mqtt-sn
+    environment:
+      - NETWORK_NAME=OpenThreadDemo
+      - PSKC=5ce66d049d007088ad900dfcc2a55ee3
+      - MASTER_KEY=00112233445566778899AABBCCDDEEFF
+      - PANID=0x1234
+      - XPANID=1111111122222222
+      - CHANNEL=15
+      - BROKER_NAME=mqtt
+      - MQTTSN_BROADCAST_ADDRESS=ff03::1
+    ports:
+      - "8080:80"
+    volumes:
+      - /dev/ttyACM0:/dev/ttyACM0
+    privileged: true
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv4.conf.all.forwarding=1
+      - net.ipv6.conf.all.forwarding=1
+    command: --radio-url spinel+hdlc_uart:///dev/ttyACM0
+    restart: always
+    depends_on:
+      - mqtt
+  mqtt:
+    image: eclipse-mosquitto:latest
+    restart: always
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto_data:/mosquitto/data
+      - ./mosquitto_logs:/mosquitto/log

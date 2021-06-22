@@ -1,0 +1,3 @@
+[submodule "otbr-mqtt-sn"]
+	path = otbr-mqtt-sn
+	url = https://github.com/stevew817/otbr-mqtt-sn.git
